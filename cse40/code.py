@@ -13,6 +13,7 @@ import cse40.utils
 
 AST_NODE_WHITELIST = [ast.Import, ast.ImportFrom, ast.FunctionDef, ast.ClassDef]
 
+
 def extract_code(path):
     """
     Gets the source code out of a path (to either a notebook or vanilla python).
@@ -20,10 +21,10 @@ def extract_code(path):
 
     code = None
 
-    if (path.endswith('.ipynb')):
+    if path.endswith(".ipynb"):
         code = extract_notebook_code(path)
-    elif (path.endswith('.py')):
-        with open(path, 'r') as file:
+    elif path.endswith(".py"):
+        with open(path, "r") as file:
             lines = file.readlines()
         lines = [line.rstrip() for line in lines]
 
@@ -33,34 +34,36 @@ def extract_code(path):
 
     return code
 
+
 def extract_notebook_code(path):
     """
     Extract all the code cells from an iPython notebook.
     A concatenation of all the cells (with a newline between each cell) will be output.
     """
 
-    with open(path, 'r') as file:
+    with open(path, "r") as file:
         notebook = json.load(file)
 
     contents = []
 
-    for cell in notebook['cells']:
-        if (cell['cell_type'] != 'code'):
+    for cell in notebook["cells"]:
+        if cell["cell_type"] != "code":
             continue
 
-        contents.append((''.join(cell['source'])))
+        contents.append(("".join(cell["source"])))
 
     return "\n".join(contents) + "\n"
 
-def import_path(path, module_name = None):
-    if (module_name is None):
-        module_name = str(uuid.uuid4()).replace('-', '')
+
+def import_path(path, module_name=None):
+    if module_name is None:
+        module_name = str(uuid.uuid4()).replace("-", "")
 
     # If it's a notebook, extract the code first and put it in a temp file.
-    if (path.endswith('.ipynb')):
+    if path.endswith(".ipynb"):
         source_code = extract_code(path)
-        path = cse40.utils.get_temp_path(suffix = '.py')
-        with open(path, 'w') as file:
+        path = cse40.utils.get_temp_path(suffix=".py")
+        with open(path, "w") as file:
             file.write(source_code)
 
     spec = importlib.util.spec_from_file_location(module_name, path)
@@ -69,7 +72,8 @@ def import_path(path, module_name = None):
 
     return module
 
-def sanatize_and_import_path(path):
+
+def sanitize_and_import_path(path):
     """
     Get the code from a source file, sanitize it, exec it, and return it as a namespace (module).
     Sanitization in this context means removing things that are not
@@ -80,36 +84,38 @@ def sanatize_and_import_path(path):
     filename = os.path.basename(path)
     source_code = extract_code(path)
 
-    return sanatize_and_import_code(source_code, filename)
+    return sanitize_and_import_code(source_code, filename)
 
-def sanatize_and_import_code(source_code, filename):
+
+def sanitize_and_import_code(source_code, filename):
     """
-    See sanatize_and_import_path().
+    See sanitize_and_import_path().
     """
 
-    module_ast = sanatize_code(source_code)
+    module_ast = sanitize_code(source_code)
 
     globals_defs = {}
-    exec(compile(module_ast, filename = filename, mode = "exec"), globals_defs)
+    exec(compile(module_ast, filename=filename, mode="exec"), globals_defs)
 
     return types.SimpleNamespace(**globals_defs)
 
-def sanatize_code(source_code):
+
+def sanitize_code(source_code):
     module_ast = ast.parse(source_code)
 
     keep_nodes = []
     for node in module_ast.body:
-        if (type(node) in AST_NODE_WHITELIST):
+        if type(node) in AST_NODE_WHITELIST:
             keep_nodes.append(node)
             continue
 
-        if (not isinstance(node, ast.Assign)):
+        if not isinstance(node, ast.Assign):
             continue
 
-        if ((len(node.targets) != 1) or (not isinstance(node.targets[0], ast.Name))):
+        if (len(node.targets) != 1) or (not isinstance(node.targets[0], ast.Name)):
             continue
 
-        if (node.targets[0].id != node.targets[0].id.upper()):
+        if node.targets[0].id != node.targets[0].id.upper():
             continue
 
         keep_nodes.append(node)
