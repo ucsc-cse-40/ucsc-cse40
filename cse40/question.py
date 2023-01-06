@@ -18,8 +18,11 @@ class Question(object):
     Note that all scoring is in ints.
     """
 
-    def __init__(self, name, max_points, timeout=DEFAULT_TIMEOUT_SEC):
+    def __init__(
+        self, name, max_points, timeout=DEFAULT_TIMEOUT_SEC, default_prefix="Question "
+    ):
         self.name = name
+        self.default_prefix = default_prefix
 
         self.max_points = max_points
         self._timeout = timeout
@@ -115,7 +118,7 @@ class Question(object):
         Get a string that represents the scoring for this question.
         """
 
-        lines = [f"{self.name}: {self.score} / {self.max_points}"]
+        lines = [f"{self.default_prefix}{self.name}: {self.score} / {self.max_points}"]
         if self.message != "":
             for line in self.message.split("\n"):
                 lines.append("   " + line)
