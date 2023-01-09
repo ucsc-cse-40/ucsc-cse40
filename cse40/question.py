@@ -150,3 +150,51 @@ class Question(object):
         question.message = data["message"]
 
         return question
+
+
+class Fail(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+
+class Task(Question):
+    def score_question(self, submission, **kwargs):
+        try:
+            self.score_task(submission, **kwargs)
+        except Fail as e:
+            self.fail(e.msg)
+
+    def score_subtask(self, subtask, points=0):
+        try:
+            subtask()
+            self.add_message("", points)
+        except Fail as e:
+            self.add_message(e.msg, 0)
+
+    @abc.abstractmethod
+    def score_task(self, submission, **kwargs):
+        """
+        full points if task runs without any failures.
+        no or partial points if partial success
+        (stop execution at first failure)
+        """
+        pass
+
+    def fail_if_not(self, value, msg):
+        if value:
+            return
+        else:
+            raise Fail(msg)
+
+    def fail_if(self, value, msg):
+        if not value:
+            return
+        else:
+            raise Fail(msg)
+
+    def fail_if_not_implemented(self, value):
+        self.fail_if(value is None, "None returned.")
+
+        self.fail_if(
+            isinstance(value, type(NotImplemented)), "NotImplemented returned."
+        )

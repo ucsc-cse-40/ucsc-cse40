@@ -8,10 +8,13 @@ import json
 import os
 import types
 import uuid
+import re
 
 import cse40.utils
 
 AST_NODE_WHITELIST = [ast.Import, ast.ImportFrom, ast.FunctionDef, ast.ClassDef]
+ESCAPE = "\a"  # a terminal bell
+PATTERN = re.compile(r"^ *\"\\u0007(.*?)(\\n)?\",?$")
 
 
 def extract_code(path):
@@ -35,24 +38,103 @@ def extract_code(path):
     return code
 
 
+class SourceLine:
+    """
+    A line in a source block
+    """
+
+    def __init__(self, val):
+        self.val = val
+
+    def encode(self):
+        """prepend an escape character sequence"""
+        return ESCAPE + self.val
+
+
+class SourceCell:
+    """
+    A Notebook source block
+    """
+
+    def __init__(self, d):
+
+        self.d = {}
+
+        for k, v in d.items():
+            if k != "source":
+                self.d[k] = v
+
+        self.d["source"] = list(map(SourceLine, d["source"]))
+
+    def encode(self):
+        return self.d
+
+
+def object_hook(obj):
+    """
+    During JSON -> Python, decoding,
+    post-process each python object returned to us.
+    """
+
+    if isinstance(obj, dict):
+        if "cell_type" in obj and obj["cell_type"] == "code":
+            return SourceCell(obj)
+
+    return obj
+
+
+def post_process(line):
+    """
+    "ESCAPEsource_line", -> source_line
+    anything_else -> \n
+    """
+    result = PATTERN.search(line)
+
+    if result is None:
+        return '"#\\n",'
+    else:
+        return f'"{result.group(1)}\\n",'
+
+
+class NotebookEncoder(json.JSONEncoder):
+    """
+    Python -> JSON encoder
+    """
+
+    def default(self, obj):
+        """
+        Handle an object that isn't recognized by the default implementation
+        """
+
+        if isinstance(obj, (SourceCell, SourceLine)):
+            return obj.encode()
+
+        return json.JSONEncoder.default(self, obj)
+
+
 def extract_notebook_code(path):
     """
     Extract all the code cells from an iPython notebook.
     A concatenation of all the cells (with a newline between each cell) will be output.
     """
 
-    with open(path, "r") as file:
-        notebook = json.load(file)
+    with open(path, "r") as f:
+        notebook = json.load(f, object_hook=object_hook)
 
-    contents = []
+    escaped_json = NotebookEncoder(indent=1).encode(notebook)
+    replaced_json = (
+        '{"source": [\n'
+        + "\n".join(map(post_process, escaped_json.split("\n")))
+        + '\n"#\\n"\n]}'
+    )
 
-    for cell in notebook["cells"]:
-        if cell["cell_type"] != "code":
-            continue
+    with open("tmp", "w") as f:
+        f.write(replaced_json)
 
-        contents.append(("".join(cell["source"])))
-
-    return "\n".join(contents) + "\n"
+    replaced_notebook = json.loads(replaced_json)
+    source = "".join(replaced_notebook["source"])
+    # print(source)
+    return source
 
 
 def import_path(path, module_name=None):
