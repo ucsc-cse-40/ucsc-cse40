@@ -1,6 +1,6 @@
 # UCSC CSE 40
 
-Materials for UCSC's CSE 40 course taught by Dr. Lise Getoor and managed by the [LINQS linqs](linqs.org).
+Materials for UCSC's CSE 40 course taught by Dr. Lise Getoor and managed by the [LINQS linqs](https://linqs.org/).
 This package is available on PyPi at [ucsc-cse40](https://pypi.org/project/ucsc-cse40/).
 
 ### Dependencies

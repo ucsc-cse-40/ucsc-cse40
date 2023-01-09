@@ -15,10 +15,10 @@ setuptools.setup(
     name = 'ucsc-cse40',
     url = 'https://github.com/ucsc-cse-40/ucsc-cse40',
 
-    version = '0.1.2',
+    version = '0.3.0',
     keywords = 'grading',
 
-    description = "Dependencies for UCSC's CSE 40: Machine Learning Basics: Data Analysis and Empirical Methods.",
+    description = "Dependencies for UCSC's CSE 40 - ML Basics: Data Analysis and Empirical Methods",
     long_description = get_description(),
     long_description_content_type = 'text/markdown',
 

@@ -56,7 +56,7 @@ def _invoke_helper(queue, function):
 # Return: (success, function return value)
 # On timeout, success will be false and the value will be None.
 # On error, success will be false and value will be the string stacktrace.
-# On suesssful completion, sucess will be true and value may be None (if nothing was returned).
+# On successful completion, success will be true and value may be None (if nothing was returned).
 def invoke_with_timeout(timeout, function):
     queue = multiprocessing.Queue(1)
     invoke_helper = lambda: _invoke_helper(queue, function)
@@ -102,7 +102,8 @@ def prepare_submission(path):
 def get_temp_path(prefix="", suffix="", rm=True):
     """
     Get a path to a valid temp dirent.
-    If rm is True, then the dirent will be attempted to be deleted on exit (no error will ocurr if the path is not there).
+    If rm is True, then the dirent will be attempted to be deleted on exit
+    (no error will occur if the path is not there).
     """
 
     path = None

@@ -34,11 +34,11 @@ class TestImport(unittest.TestCase):
                 # Expected.
                 pass
 
-    def test_sanatize_import_base(self):
+    def test_sanitize_import_base(self):
         for ext in ['py', 'ipynb']:
             for basename in ['base', 'base_with_raise']:
                 path = os.path.join(DATA_DIR, basename + '.' + ext)
-                module = cse40.code.sanatize_and_import_path(path)
+                module = cse40.code.sanitize_and_import_path(path)
 
                 self.assertEqual(module.SOME_CONSTANT, 1)
                 self.assertIn('random', dir(module))

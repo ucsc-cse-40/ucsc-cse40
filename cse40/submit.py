@@ -4,7 +4,6 @@ Handles submission of student code to the autograder.
 
 import argparse
 import json
-import os
 import sys
 import urllib.request
 
@@ -22,6 +21,8 @@ def submit_notebook(config_path = DEFAULT_CONFIG_PATH, submission_path = DEFAULT
 
     with open(config_path, 'r') as file:
         config = json.load(file)
+
+    config['task'] = 'grade'
     config['code'] = source_code
 
     payload = bytes(json.dumps(config), ENCODING)
@@ -40,7 +41,8 @@ def submit_notebook(config_path = DEFAULT_CONFIG_PATH, submission_path = DEFAULT
     return (True, cse40.assignment.Assignment.from_dict(body['assignment']))
 
 def main(arguments):
-    (success, result) = submit_notebook(arguments.config_path, arguments.submission_path, arguments.server)
+    (success, result) = submit_notebook(arguments.config_path, arguments.submission_path,
+            arguments.server)
 
     if (not success):
         print('The autograder failed to grade your assignment.')

@@ -26,7 +26,9 @@ def test_dir(grader_path, solutions_dir):
         score, _ = assignment.get_score()
 
         if (score != solution.EXPECTED_POINTS):
-            print("    ERROR: Expected score (%s) does not match actual score (%s)." % (solution.EXPECTED_POINTS, score))
+            print("    ERROR: Expected score (%s) does not match actual score (%s)." % (
+                solution.EXPECTED_POINTS, score))
+            error_count += 1
             continue
 
     return error_count
@@ -36,7 +38,7 @@ def main(grader_path, solutions_dir):
     sys.exit(error_count)
 
 def _load_args(args):
-    executable = args.pop(0)
+    args.pop(0)
     if (len(args) != 2 or ({'h', 'help'} & {arg.lower().strip().replace('-', '') for arg in args})):
         print("USAGE: python3 -m cse40.testgrader <grader path> <solution dir>", file = sys.stderr)
         sys.exit(1)

@@ -44,9 +44,10 @@ def main(pattern = None):
 
 def _load_args(args):
     executable = args.pop(0)
-    if (len(args) >  1 or ({'h', 'help'} & {arg.lower().strip().replace('-', '') for arg in args})):
+    if (len(args) > 1 or ({'h', 'help'} & {arg.lower().strip().replace('-', '') for arg in args})):
         print("USAGE: python3 %s [test pattern]" % (executable), file = sys.stderr)
-        print('The test pattern will be used directly in re.search() to see if a test will be run.', file = sys.stderr)
+        print('The test pattern will be used directly in re.search() to see if a test will be run.',
+            file = sys.stderr)
         sys.exit(1)
 
     pattern = None

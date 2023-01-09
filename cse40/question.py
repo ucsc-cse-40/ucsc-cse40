@@ -13,7 +13,7 @@ DEFAULT_TIMEOUT_SEC = 60
 
 class Question(object):
     """
-    Questions are gradeable portions of an assignment.
+    Questions are grade-able portions of an assignment.
     They can also be thought of as "test cases".
     Note that all scoring is in ints.
     """
@@ -43,7 +43,7 @@ class Question(object):
 
         try:
             success, value = cse40.utils.invoke_with_timeout(self._timeout, helper)
-        except Exception as ex:
+        except Exception:
             self.fail("Raised an exception: " + traceback.format_exc())
             return 0
 
@@ -51,7 +51,7 @@ class Question(object):
             if value is None:
                 self.fail("Timeout (%d seconds)." % (self._timeout))
             else:
-                self.fail("Error durring execution: " + value)
+                self.fail("Error during execution: " + value)
 
             return 0
 
@@ -87,7 +87,7 @@ class Question(object):
 
     def fail(self, message):
         """
-        Immediatley fail this question, no partial credit.
+        Immediately fail this question, no partial credit.
         """
 
         self.score = 0

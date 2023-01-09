@@ -50,13 +50,16 @@ class Style(cse40.question.Question):
         self._replacement_name = replacement_name
 
     def score_question(self, *args, **kwargs):
-        error_count, style_output = check_style(self._path, replace_output_path = self._replacement_name)
+        error_count, style_output = check_style(self._path,
+                replace_output_path = self._replacement_name)
 
         if (error_count == 0):
             self.add_message("Style is clean!")
             self.full_credit()
         else:
-            self.add_message("Code has %d style issues (shown below). Note that line numbers will be offset because of iPython notebooks." % (error_count))
+            self.add_message("Code has %d style issues (shown below)."
+                    + " Note that line numbers will be offset because of iPython notebooks."
+                    % (error_count))
             self.add_message("--- Style Output BEGIN ---")
             self.add_message("\n".join(style_output))
             self.add_message("--- Style Output END ---")
@@ -74,6 +77,9 @@ def check_style(path, replace_output_path = None):
         cleanup_paths.append(temp_path)
         with open(temp_path, 'w') as file:
             file.write(contents)
+
+        if (replace_output_path is None):
+            replace_output_path = path
 
         path = temp_path
     else:
@@ -119,7 +125,7 @@ def main(path):
     sys.exit(count)
 
 def _load_args(args):
-    executable = args.pop(0)
+    args.pop(0)
     if (len(args) != 1 or ({'h', 'help'} & {arg.lower().strip().replace('-', '') for arg in args})):
         print("USAGE: python3 -m cse40.style <py or ipynb path>", file = sys.stderr)
         sys.exit(1)
