@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # Deploy to PyPi Test and PyPi.
-# Requires a complete .secrets file with TWINE_USERNAME and TWINE_PASSWORD.
+# Assume pypi credentials exist in one of the standard locations.
 
 readonly THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly SECRETS_PATH="${THIS_DIR}/.secrets"
 
 function main() {
     if [[ $# -ne 0 ]]; then
@@ -17,9 +16,7 @@ function main() {
 
     cd "${THIS_DIR}"
 
-    source "${SECRETS_PATH}"
-
-    rm -rf "${THIS_DIR}/dist"
+    rm -rf "dist"
 
     python3 -m build
     python3 -m twine upload -r testpypi dist/*

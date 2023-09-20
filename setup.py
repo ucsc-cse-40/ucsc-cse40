@@ -15,7 +15,7 @@ setuptools.setup(
     name = 'ucsc-cse40',
     url = 'https://github.com/ucsc-cse-40/ucsc-cse40',
 
-    version = '0.5.0',
+    version = '0.6.0',
     keywords = 'grading',
 
     description = "Dependencies for UCSC's CSE 40 - ML Basics: Data Analysis and Empirical Methods",
@@ -36,7 +36,6 @@ setuptools.setup(
     packages = setuptools.find_packages(),
 
     install_requires = [
-        'flake8==6.0.0',
         'jupyterlab>=3.5.0',
         'matplotlib>=3.6.2',
         'numpy>=1.22.3',
