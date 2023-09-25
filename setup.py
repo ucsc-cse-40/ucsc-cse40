@@ -41,7 +41,7 @@ setuptools.setup(
         'numpy>=1.22.3',
         'pandas>=1.5.1',
         'scikit-learn>=1.2.0',
-        'autograder-py==0.1.2',
+        'autograder-py==0.1.3',
     ],
 
     license_files = (LICENSE_PATH, ),
