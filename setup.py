@@ -15,7 +15,7 @@ setuptools.setup(
     name = 'ucsc-cse40',
     url = 'https://github.com/ucsc-cse-40/ucsc-cse40',
 
-    version = '0.8.0',
+    version = '0.9.0',
     keywords = 'grading',
 
     description = "Dependencies for UCSC's CSE 40 - ML Basics: Data Analysis and Empirical Methods",
@@ -30,7 +30,7 @@ setuptools.setup(
     classifiers = [
         'Intended Audience :: Education',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
 
     packages = setuptools.find_packages(),
@@ -41,10 +41,10 @@ setuptools.setup(
         'numpy>=1.22.3',
         'pandas>=1.5.1',
         'scikit-learn>=1.2.0',
-        'autograder-py==0.3.*',
+        'autograder-py==0.4.*',
     ],
 
     license_files = (LICENSE_PATH, ),
 
-    python_requires = '>=3.7'
+    python_requires = '>=3.8'
 )
