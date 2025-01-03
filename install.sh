@@ -18,7 +18,7 @@ function main() {
 
     rm -rf dist
     python3 setup.py sdist
-    pip3 install dist/ucsc* --upgrade --force-reinstall --no-dependencies
+    pip3 install dist/ucsc-cse40-* --upgrade --force-reinstall --no-dependencies
 }
 
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && main "$@"
