@@ -1,11 +1,6 @@
+autograder-py>=1.0.0,==1.*
 jupyterlab>=3.5.0
 matplotlib>=3.6.2
 numpy>=1.22.3
 pandas>=1.5.1
 scikit-learn>=1.2.0
-
-autograder-py==0.6.*
-
-build
-twine
-packaging>=21.3
